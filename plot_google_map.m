@@ -182,6 +182,7 @@ mapScale = 0;
 scaleWidth = 0.25;
 scaleLocation = 'se';
 scaleUnits = 'si';
+imageProperties = {};
 
 % Handle input arguments
 if nargin >= 2
@@ -352,11 +353,16 @@ if nargout <= 1 % only if in plotting mode
     curChildren = get(axHandle,'children');
     map_objs = findobj(curChildren,'tag','gmap');
     bd_callback = [];
+    bd_contextmenu = [];
     for idx = 1:length(map_objs)
         if ~isempty(get(map_objs(idx),'ButtonDownFcn'))
             % copy callback properties from current map
             bd_callback = get(map_objs(idx),'ButtonDownFcn');
         end
+        if ~isempty(get(map_objs(idx),'UIContextMenu'))
+            % copy context menu from current map
+            bd_contextmenu = get(map_objs(idx),'UIContextMenu');
+        end        
     end
     ud = get(axHandle, 'UserData');
     delete(map_objs);
@@ -561,6 +567,8 @@ if nargout <= 1 % plot map
     
     % set callback properties 
     set(h,'ButtonDownFcn',bd_callback);
+    % set context menu
+    set(h,'UIContextMenu',bd_contextmenu);    
     
     if mapScale
        makescale(axHandle, 'set_callbacks', 0, 'units', scaleUnits, ...
